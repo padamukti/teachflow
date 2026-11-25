@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {validateWordwall,extractEmbed,handleWordwall} from '../shared/wordwall.mjs';
+const original='https://wordwall.net/id/resource/39252/example';
+const embed='https://wordwall.net/id/embed/abc123?themeId=46&templateId=5';
+test('resource URL and identifier',()=>assert.equal(validateWordwall(original).id,'39252'));
+test('reject hostile URLs',()=>{for(const u of ['https://wordwall.net.evil.com/resource/1','http://wordwall.net/resource/1','https://wordwall.net@evil.com/resource/1','https://wordwall.net:444/resource/1','https://wordwall.net/embed/abc'])assert.throws(()=>validateWordwall(u));});
+test('extract iframe and decode ampersand',()=>assert.equal(extractEmbed(`<iframe src="${embed.replace('&','&amp;')}"></iframe>`),embed));
+test('reject malicious iframe',()=>assert.throws(()=>extractEmbed('<iframe src="https://evil.com/embed/abc"></iframe>')));
+test('mock successful oEmbed response',async()=>{const r=await handleWordwall(new Request('http://localhost/api/wordwall?url='+encodeURIComponent(original)),async u=>{assert.equal(u.origin,'https://wordwall.net');assert.equal(u.searchParams.get('url'),original);return Response.json({title:'Test',html:`<iframe src="${embed}"></iframe>`});});assert.equal(r.status,200);assert.equal((await r.json()).embedUrl,embed)});
+test('upstream failure',async()=>{const r=await handleWordwall(new Request('http://localhost/api/wordwall?url='+encodeURIComponent(original)),async()=>new Response('',{status:404}));assert.equal(r.status,502)});
+test('bad URL does not call upstream',async()=>{const r=await handleWordwall(new Request('http://localhost/api/wordwall?url=https://evil.com'),()=>{throw Error('not expected')});assert.equal(r.status,400)});
+test('reject POST',async()=>assert.equal((await handleWordwall(new Request('http://localhost/api/wordwall',{method:'POST'}))).status,405));

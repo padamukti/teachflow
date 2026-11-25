@@ -1,0 +1,12 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {defaults,normalizePreferences,normalizeMetadata,filterActivities,getRoute} from '../src/model.mjs';import {messages} from '../src/i18n.js';
+const rows=[{id:'a',title:'Huruf Hijaiyah',category:'Iqra',level:'Iqra 1',template:'Quiz',tags:['Arabic'],favorite:true,createdAt:'2026-01-01',lastUsedAt:'2026-02-01'},{id:'b',title:'بَ تَ',category:'Iqra',level:'Iqra 2',createdAt:'2026-01-02',archivedAt:'2026-02-02'},{id:'c',title:'Mufradat',createdAt:'2026-01-03'}];
+test('preferences defaults and invalid values',()=>assert.deepEqual(normalizePreferences({language:'bad',theme:'bad'}),defaults));
+test('preferences keep valid values',()=>assert.deepEqual(normalizePreferences({language:'en',theme:'system',view:'list'}),{language:'en',theme:'system',view:'list'}));
+test('legacy metadata defaults and tags',()=>assert.deepEqual(normalizeMetadata({title:' A ',tags:' iqra, iqra, arab '}),{title:'A',category:'',level:'',template:'',tags:['iqra','arab'],notes:'',duration:null}));
+test('invalid metadata rejected',()=>{assert.throws(()=>normalizeMetadata({title:' '}));assert.throws(()=>normalizeMetadata({title:'A',duration:0}));assert.throws(()=>normalizeMetadata({title:'A',duration:2.5}));});
+test('legacy records remain visible and archive excluded',()=>assert.deepEqual(filterActivities(rows).map(x=>x.id),['c','a']));
+test('search, filters and favorites',()=>assert.deepEqual(filterActivities(rows,{query:'HIJAIYAH arabic',category:'Iqra',level:'Iqra 1',template:'Quiz',favorite:true}).map(x=>x.id),['a']));
+test('Arabic search and archive',()=>assert.deepEqual(filterActivities(rows,{query:'بَ',status:'archived'}).map(x=>x.id),['b']));
+test('sort last used without mutating data',()=>{assert.deepEqual(filterActivities(rows,{sort:'used'}).map(x=>x.id),['a','c']);assert.deepEqual(rows.map(x=>x.id),['a','b','c']);});
+test('routes and fallback',()=>{assert.equal(getRoute('#/activities'),'activities');assert.equal(getRoute('#/foo'),'dashboard')});
+test('translation keys match',()=>assert.deepEqual(Object.keys(messages.id).sort(),Object.keys(messages.en).sort()));

@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {TOUR_KEY,tourSteps,tourCopy,normalizeTour,sidebarStep,advanceTour,placeBubble} from '../src/tour.mjs';
+test('gift uses a new key and only explicit completion suppresses it',()=>{assert.equal(TOUR_KEY,'teachflow.tour.v2');assert.deepEqual(normalizeTour({seen:'true',videoId:'old'}),{seen:false});assert.deepEqual(normalizeTour({seen:true,videoId:'old'}),{seen:true})});
+test('all 14 distinct targets have both language descriptions',()=>{assert.equal(tourSteps.length,14);assert.equal(new Set(tourSteps).size,14);for(const lang of ['id','en'])for(const id of tourSteps)assert.ok(tourCopy[lang].steps[id].every(Boolean))});
+test('mobile sidebar only opens for sidebar steps',()=>{assert.equal(tourSteps.filter(sidebarStep).length,9);assert.equal(sidebarStep('search'),false);assert.equal(sidebarStep('none'),false)});
+test('tour begins at first target and ends after final target',()=>{assert.equal(advanceTour(-1,1),0);assert.equal(advanceTour(0,-1),0);assert.equal(advanceTour(13,1),14);assert.equal(advanceTour(14,1),14)});
+test('desktop sidebar bubble is on right and points to target',()=>{const p=placeBubble({left:20,right:230,top:300,bottom:345},340,200,1440,900,true);assert.equal(p.side,'right');assert.equal(p.x,244);assert.ok(p.separated);assert.equal(p.arrow,100)});
+test('header bubble goes below and stays inside viewport',()=>{const p=placeBubble({left:1250,right:1410,top:15,bottom:65},340,200,1440,900);assert.equal(p.side,'bottom');assert.equal(p.y,79);assert.ok(p.x+340<=1428);assert.ok(p.separated)});
+test('mobile bubble is clamped and moves above a low sidebar target',()=>{const p=placeBubble({left:10,right:265,top:530,bottom:575},330,210,390,700,true);assert.equal(p.side,'top');assert.ok(p.x>=12&&p.x+330<=378&&p.y>=12);assert.ok(p.separated)});
+test('short viewport fallback remains bounded',()=>{const p=placeBubble({left:12,right:270,top:110,bottom:160},296,200,320,300,true);assert.ok(p.x>=12&&p.y>=12&&p.x+296<=308&&p.y+200<=288)});

@@ -1,0 +1,68 @@
+/* Gift and onboarding are deliberately scoped; the daily workspace is unchanged. */
+.player-page{max-width:1120px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:20px;min-width:0}
+.player-page .player{width:100%;margin:0;max-width:none}
+.player-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.player-toolbar .back{margin:0;padding-left:0}
+.player-toolbar>.primary{flex-shrink:0}
+.guide-dialog{position:fixed;inset:0;margin:0;padding:0;border:0;width:100%;height:100%;max-width:none;max-height:none;background:transparent;color:var(--text);overflow:hidden}
+.guide-dialog::backdrop{background:transparent}
+.guide-welcome[open]{display:grid;place-items:center;padding:16px;background:rgba(13,25,19,.62);animation:gift-dim .35s ease-out}
+.gift-card{position:relative;z-index:1;width:min(540px,100%);max-height:calc(100dvh - 32px);overflow:auto;padding:36px 38px 28px;border:1px solid var(--border);border-radius:16px;background:var(--surface);box-shadow:0 20px 65px #09150e55;text-align:center;animation:gift-in .4s ease-out}
+.gift-close{position:absolute;top:10px;right:10px}
+.gift-symbol{width:58px;height:58px;border-radius:12px;background:var(--hover);color:var(--accent);display:grid;place-items:center;margin:0 auto 18px;position:relative}
+.gift-symbol svg+svg{position:absolute;right:-5px;bottom:-4px;color:#ce7293;fill:#ce7293;stroke:var(--surface);stroke-width:2}
+.gift-occasion{font-size:11px;letter-spacing:.14em;font-weight:700;color:var(--accent);margin:0 0 12px}
+.gift-card h1{font-size:clamp(25px,4.8vw,34px);line-height:1.17;letter-spacing:-.035em;margin:0 0 18px;text-wrap:balance}
+.gift-message{font-size:15px;line-height:1.85;margin:0;color:var(--text)}
+.gift-sign{font-size:13px;font-style:italic;color:var(--muted);margin:16px 0 20px}
+.gift-actions{display:grid;gap:9px;justify-items:center}.gift-actions .primary{width:100%;justify-content:center}
+.gift-effects{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none}
+.gift-burst{position:absolute;width:1px;height:1px}.burst-0{left:22%;top:28%}.burst-1{left:78%;top:24%;animation-delay:.22s}.burst-2{left:73%;top:73%}
+.spark{position:absolute;width:5px;height:5px;background:#f0cd83;border-radius:50%;opacity:0;animation:gift-spark 1.35s ease-out both;transform:rotate(var(--angle)) translateX(0)}.burst-1 .spark{animation-delay:.18s}.burst-2 .spark{animation-delay:.35s}.spark:nth-child(3n){background:#e5a0b8}.spark:nth-child(4n){background:#b7d6bd}
+.gift-heart{position:absolute;bottom:-30px;color:#f4a0bb;fill:currentColor;opacity:0;animation:gift-float 5s ease-out both;pointer-events:none}
+@keyframes gift-dim{from{background:rgba(13,25,19,0)}to{background:rgba(13,25,19,.62)}}
+@keyframes gift-in{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes gift-spark{0%{opacity:0;transform:rotate(var(--angle)) translateX(0)}15%{opacity:.85}100%{opacity:0;transform:rotate(var(--angle)) translateX(var(--distance)) scale(.35)}}
+@keyframes gift-float{0%{opacity:0;transform:translateY(0) rotate(-12deg)}18%{opacity:.24}80%{opacity:.16}100%{opacity:0;transform:translateY(-85dvh) rotate(18deg)}}
+.guide-walk{animation:guide-reveal .22s ease-out}
+.guide-spot{position:absolute;pointer-events:none;border:2px solid #8cc6a2;border-radius:9px;box-shadow:0 0 0 200vmax rgba(9,17,13,.68);z-index:1}
+.guide-spot[hidden]{display:block;left:-10px!important;top:-10px!important;width:1px!important;height:1px!important;border:0;box-shadow:0 0 0 200vmax rgba(9,17,13,.68)}
+.guide-bubble{position:absolute;z-index:2;width:min(340px,calc(100vw - 24px));max-height:calc(100dvh - 24px);padding:18px;border-radius:12px;background:var(--surface);border:1px solid var(--border);box-shadow:0 12px 38px #0004;animation:guide-reveal .18s ease-out;overflow:visible}
+.guide-arrow{position:absolute;width:13px;height:13px;background:var(--surface);border:1px solid var(--border);transform:rotate(45deg);pointer-events:none}
+.guide-bubble[data-side=right] .guide-arrow{left:-7px;top:calc(var(--arrow-offset) - 7px);border-right:0;border-top:0}
+.guide-bubble[data-side=left] .guide-arrow{right:-7px;top:calc(var(--arrow-offset) - 7px);border-left:0;border-bottom:0}
+.guide-bubble[data-side=bottom] .guide-arrow{top:-7px;left:calc(var(--arrow-offset) - 7px);border-bottom:0;border-right:0}
+.guide-bubble[data-side=top] .guide-arrow{bottom:-7px;left:calc(var(--arrow-offset) - 7px);border-top:0;border-left:0}
+.guide-bubble[data-side=none] .guide-arrow{display:none}
+.guide-progress{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted);font-weight:600;margin-bottom:10px}
+.guide-bubble h2{font-size:19px;line-height:1.3;margin:0 0 9px;letter-spacing:-.02em}
+.guide-bubble p{font-size:14px;line-height:1.6;margin:0 0 12px;overflow-wrap:anywhere}
+.guide-actions{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;margin-top:16px}.guide-actions>div{display:flex;gap:6px;align-items:center}.guide-actions button{font-size:12px;padding:8px 9px;min-height:36px}.guide-actions .text-button{padding-left:0}
+.guide-dialog h1:focus,.guide-dialog h2:focus{outline:none}
+@keyframes guide-reveal{from{opacity:0}to{opacity:1}}
+@media(max-width:480px){.gift-card{padding:30px 22px 22px}.gift-message{font-size:14px;line-height:1.7}.guide-bubble{padding:14px}.guide-bubble p{font-size:13px}.guide-bubble h2{font-size:17px}.player-page{gap:16px}}
+@media(max-height:400px){.guide-bubble{overflow:auto}.guide-arrow{display:none}.gift-card{padding:22px}}
+@media(prefers-reduced-motion:reduce){.guide-dialog,.gift-card,.guide-bubble{animation:none!important}.gift-effects{display:none}}
+
+.spark-0{--angle:0deg;--distance:85px}
+.spark-1{--angle:30deg;--distance:102px}
+.spark-2{--angle:60deg;--distance:119px}
+.spark-3{--angle:90deg;--distance:136px}
+.spark-4{--angle:120deg;--distance:85px}
+.spark-5{--angle:150deg;--distance:102px}
+.spark-6{--angle:180deg;--distance:119px}
+.spark-7{--angle:210deg;--distance:136px}
+.spark-8{--angle:240deg;--distance:85px}
+.spark-9{--angle:270deg;--distance:102px}
+.spark-10{--angle:300deg;--distance:119px}
+.spark-11{--angle:330deg;--distance:136px}
+.heart-0{left:5.0%;animation-delay:0.00s;width:15px}
+.heart-1{left:14.7%;animation-delay:0.42s;width:20px}
+.heart-2{left:24.4%;animation-delay:0.84s;width:25px}
+.heart-3{left:34.099999999999994%;animation-delay:1.26s;width:30px}
+.heart-4{left:43.8%;animation-delay:1.68s;width:15px}
+.heart-5{left:53.5%;animation-delay:0.00s;width:20px}
+.heart-6{left:63.199999999999996%;animation-delay:0.42s;width:25px}
+.heart-7{left:72.89999999999999%;animation-delay:0.84s;width:30px}
+.heart-8{left:82.6%;animation-delay:1.26s;width:15px}
+.heart-9{left:92.3%;animation-delay:1.68s;width:20px}

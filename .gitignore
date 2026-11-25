@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.netlify/
+.env*
+
+# Private workspace exports must never be committed.
+teachflow-backup-*.json
+teachflow-activities-*.csv
